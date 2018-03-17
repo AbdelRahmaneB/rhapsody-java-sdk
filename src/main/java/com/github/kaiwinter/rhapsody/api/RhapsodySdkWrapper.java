@@ -13,6 +13,7 @@ import com.github.kaiwinter.rhapsody.model.AccessToken;
 import com.github.kaiwinter.rhapsody.model.AccountData;
 import com.github.kaiwinter.rhapsody.model.AlbumData;
 import com.github.kaiwinter.rhapsody.model.AlbumData.Artist;
+import com.github.kaiwinter.rhapsody.model.AlbumData.Track;
 import com.github.kaiwinter.rhapsody.model.ArtistData;
 import com.github.kaiwinter.rhapsody.model.BioData;
 import com.github.kaiwinter.rhapsody.model.GenreData;
@@ -32,6 +33,7 @@ import com.github.kaiwinter.rhapsody.service.member.LibraryService;
 import com.github.kaiwinter.rhapsody.service.metadata.AlbumService;
 import com.github.kaiwinter.rhapsody.service.metadata.ArtistService;
 import com.github.kaiwinter.rhapsody.service.metadata.GenreService;
+import com.github.kaiwinter.rhapsody.service.metadata.SearchService;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -74,6 +76,7 @@ public class RhapsodySdkWrapper {
    private final AccountService memberService;
    private final LibraryService libraryService;
    private final ChartService chartService;
+   private final SearchService searchService;
 
    private final DataCache dataCache;
 
@@ -138,6 +141,7 @@ public class RhapsodySdkWrapper {
       memberService = restAdapter.create(AccountService.class);
       libraryService = restAdapter.create(LibraryService.class);
       chartService = restAdapter.create(ChartService.class);
+      searchService = restAdapter.create(SearchService.class);
 
       dataCache = new DataCache();
 
@@ -270,6 +274,24 @@ public class RhapsodySdkWrapper {
    }
 
    /**
+    * Synchronously returns a list of tracks by substring.
+    *
+    * <p>
+    * REST-method: <code>/search/typeahead</code>
+    * </p>
+    *
+    * @param query
+    *            The search query. 
+    * @param limit
+    *           The number of tracks to load, if <code>null</code> the default value is used (20)
+    * @return List of matching tracks 
+    */
+   public Collection<Track> searchTrack(String query, Integer limit) {
+      LOGGER.info("Searshing tracks with query {}", query);
+      return searchService.search(apiKey, prettyJson, authorizationInfo.catalog, "track", query, limit);
+   }
+   
+   /**
     * Asynchronously loads the album with the given <code>albumId</code> asynchronously.
     *
     * <p>
@@ -302,7 +324,7 @@ public class RhapsodySdkWrapper {
       LOGGER.info("Loading album {}", albumId);
       return albumService.getAlbum(apiKey, prettyJson, authorizationInfo.catalog, albumId);
    }
-
+   
    /**
     * Asynchronously loads the artist's metadata ({@link ArtistData}) with the given <code>artistId</code>
     * asynchronously.
