@@ -2,13 +2,9 @@ package com.github.kaiwinter.rhapsody.service.metadata;
 
 import java.util.Collection;
 
-import com.github.kaiwinter.rhapsody.model.AccountData;
-import com.github.kaiwinter.rhapsody.model.AlbumData;
 import com.github.kaiwinter.rhapsody.model.AlbumData.Track;
 
-import retrofit.Callback;
 import retrofit.http.GET;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
